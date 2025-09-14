@@ -1,0 +1,596 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bachelor House Manager</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+
+<body>
+    <!-- Loading Screen -->
+    <div class="loading-screen">
+        <div class="loader">
+            <i class="fas fa-home"></i>
+            <h2>Bachelor House Manager</h2>
+            <div class="spinner"></div>
+        </div>
+    </div>
+
+    <!-- Authentication Section -->
+    <section class="auth-section">
+        <div class="auth-container">
+            <div class="auth-header">
+                <h1>Bachelor House Manager</h1>
+                <p>Complete expense and meal tracking solution</p>
+            </div>
+
+            <div id="loginForm" class="auth-form active">
+                <h2>Login to Your Account</h2>
+                <div class="role-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="role" value="manager" checked>
+                        <span>Manager</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="role" value="member">
+                        <span>Member</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="loginEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="loginPassword" placeholder="Password" required>
+                </div>
+                <button id="loginBtn" class="auth-btn">
+                    <i class="fas fa-sign-in-alt"></i> Login
+                </button>
+                <div class="auth-switch">
+                    Don't have an account? <a href="#" id="switchToRegister">Register here</a>
+                </div>
+            </div>
+
+            <div id="registerForm" class="auth-form">
+                <h2>Create New Account</h2>
+                <div class="role-selector">
+                    <label class="radio-label">
+                        <input type="radio" name="regRole" value="manager" checked>
+                        <span>Manager</span>
+                    </label>
+                    <label class="radio-label">
+                        <input type="radio" name="regRole" value="member">
+                        <span>Member</span>
+                    </label>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-user"></i>
+                    <input type="text" id="regFullName" placeholder="Full Name" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-envelope"></i>
+                    <input type="email" id="regEmail" placeholder="Email" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-phone"></i>
+                    <input type="tel" id="regPhone" placeholder="Phone Number" required>
+                </div>
+                <div class="input-group">
+                    <i class="fas fa-lock"></i>
+                    <input type="password" id="regPassword" placeholder="Password" required>
+                </div>
+                <div class="input-group" id="houseCodeGroup" style="display: none;">
+                    <i class="fas fa-home"></i>
+                    <input type="text" id="regHouseCode" placeholder="Enter manager's 8-digit code" required>
+                    <small>Enter the 8-digit code provided by your house manager</small>
+                </div>
+                <button id="registerBtn" class="auth-btn">
+                    <i class="fas fa-user-plus"></i> Register
+                </button>
+                <div class="auth-switch">
+                    Already have an account? <a href="#" id="switchToLogin">Login here</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Application -->
+    <div class="main-app" style="display: none;">
+        <!-- Notification Badge -->
+        <div id="notificationBadge" class="notification-badge" style="display: none;">
+            <i class="fas fa-bell"></i>
+            <span id="notificationCount">0</span>
+        </div>
+
+        <!-- Navigation -->
+        <nav class="navbar">
+            <div class="nav-brand">
+                <i class="fas fa-home"></i>
+                Bachelor House
+                <span id="houseCodeBadge" class="house-code"></span>
+            </div>
+            <div class="nav-menu">
+                <a href="#dashboard" class="nav-link active"><i class="fas fa-tachometer-alt"></i> Dashboard</a>
+                <a href="#members" class="nav-link"><i class="fas fa-users"></i> Members</a>
+                <a href="#meals" class="nav-link"><i class="fas fa-utensils"></i> Meals</a>
+                <a href="#expenses" class="nav-link"><i class="fas fa-money-bill-wave"></i> Expenses</a>
+                <a href="#reports" class="nav-link"><i class="fas fa-chart-bar"></i> Reports</a>
+                <a href="#profile" class="nav-link"><i class="fas fa-user"></i> Profile</a>
+                <a href="#notifications" class="nav-link" id="notificationLink" style="display: none;">
+                    <i class="fas fa-bell"></i> Notifications
+                    <span id="navNotificationCount" class="notification-count">0</span>
+                </a>
+            </div>
+            <div class="nav-user">
+                <div class="user-info">
+                    <span id="userName" class="user-name"></span>
+                    <span id="userRole" class="user-role"></span>
+                </div>
+                <button id="logoutBtn" class="logout-btn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </nav>
+
+        <!-- Dashboard Section -->
+        <section id="dashboard" class="section active">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-tachometer-alt"></i> Dashboard</h1>
+                    <div class="header-actions">
+                        <select id="monthSelector">
+                            <option>January</option>
+                            <option>February</option>
+                            <option>March</option>
+                            <option>April</option>
+                            <option>May</option>
+                            <option>June</option>
+                            <option>July</option>
+                            <option>August</option>
+                            <option>September</option>
+                            <option>October</option>
+                            <option>November</option>
+                            <option>December</option>
+                        </select>
+                        <select id="yearSelector">
+                            <option>2024</option>
+                            <option>2025</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-shopping-cart"></i></div>
+                        <div class="stat-content">
+                            <h3>Total Bazar</h3>
+                            <p id="totalBazar" class="stat-value">৳0</p>
+                            <span class="stat-trend"><i class="fas fa-arrow-up"></i> This month</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-utensils"></i></div>
+                        <div class="stat-content">
+                            <h3>Total Meals</h3>
+                            <p id="totalMeals" class="stat-value">0</p>
+                            <span class="stat-trend"><i class="fas fa-arrow-up"></i> All members</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-calculator"></i></div>
+                        <div class="stat-content">
+                            <h3>Meal Rate</h3>
+                            <p id="mealRate" class="stat-value">৳0</p>
+                            <span class="stat-trend"><i class="fas fa-arrow-up"></i> Per meal</span>
+                        </div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-icon"><i class="fas fa-users"></i></div>
+                        <div class="stat-content">
+                            <h3>Active Members</h3>
+                            <p id="totalMembers" class="stat-value">0</p>
+                            <span class="stat-trend"><i class="fas fa-arrow-up"></i> This month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="quick-actions">
+                    <h2>Quick Actions</h2>
+                    <div class="action-grid">
+                        <button class="action-btn" id="quickAddMeal">
+                            <i class="fas fa-utensils"></i> Add Meal Entry
+                        </button>
+                        <button class="action-btn" id="quickAddExpense">
+                            <i class="fas fa-money-bill-wave"></i> Add Expense
+                        </button>
+                        <button class="action-btn" id="quickGenerateReport">
+                            <i class="fas fa-chart-bar"></i> Generate Report
+                        </button>
+                        <button class="action-btn" id="quickManageMembers" style="display: none;">
+                            <i class="fas fa-users"></i> Manage Members
+                        </button>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h2>Balance Summary</h2>
+                    <table class="styled-table" id="balanceTable">
+                        <thead>
+                            <tr>
+                                <th>Member</th>
+                                <th>Total Meals</th>
+                                <th>Total Given</th>
+                                <th>Meal Bill</th>
+                                <th>Balance</th>
+                                <th>Status</th>
+                            </tr>
+                        </thead>
+                        <tbody id="balanceTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Members Section -->
+        <section id="members" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-users"></i> Members Management</h1>
+                    <button id="addMemberBtn" class="btn-primary" style="display: none;">
+                        <i class="fas fa-user-plus"></i> Add Member
+                    </button>
+                </div>
+                <div id="membersGrid" class="members-grid">
+                    <!-- Dynamic members -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Notifications Section -->
+        <section id="notifications" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-bell"></i> Notifications</h1>
+                    <button id="markAllReadBtn" class="btn-secondary">
+                        <i class="fas fa-check-double"></i> Mark All Read
+                    </button>
+                </div>
+                <div id="notificationsContainer" class="notifications-container">
+                    <!-- Dynamic notifications -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Meals Section -->
+        <section id="meals" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-utensils"></i> Meal Tracking</h1>
+                    <button id="addMealBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Meal Entry
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <h2>Meal Entries for <span id="mealMonthYear"></span></h2>
+                    <table class="styled-table" id="mealsTable">
+                        <thead id="mealsTableHead">
+                            <!-- Dynamic headers -->
+                        </thead>
+                        <tbody id="mealsTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Expenses Section -->
+        <section id="expenses" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-money-bill-wave"></i> Expense Tracking</h1>
+                    <button id="addExpenseBtn" class="btn-primary">
+                        <i class="fas fa-plus"></i> Add Expense
+                    </button>
+                </div>
+
+                <div class="expense-summary">
+                    <div class="expense-card">
+                        <h3>Today's Expenses</h3>
+                        <p id="todayExpenses">৳0</p>
+                    </div>
+                    <div class="expense-card">
+                        <h3>This Week</h3>
+                        <p id="weekExpenses">৳0</p>
+                    </div>
+                    <div class="expense-card">
+                        <h3>This Month</h3>
+                        <p id="monthExpenses">৳0</p>
+                    </div>
+                </div>
+
+                <div class="table-container">
+                    <h2>Expense Entries for <span id="expenseMonthYear"></span></h2>
+                    <table class="styled-table" id="expensesTable">
+                        <thead id="expensesTableHead">
+                            <!-- Dynamic headers -->
+                        </thead>
+                        <tbody id="expensesTableBody">
+                            <!-- Dynamic content -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </section>
+
+        <!-- Reports Section -->
+        <section id="reports" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-chart-bar"></i> Reports & Analytics</h1>
+                    <button id="exportPDFBtn" class="btn-primary">
+                        <i class="fas fa-file-pdf"></i> Export PDF
+                    </button>
+                </div>
+
+                <div class="table-container">
+                    <h2>Monthly Report for <span id="reportMonthYear"></span></h2>
+                    <div id="reportContent">
+                        <!-- Dynamic report content -->
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Profile Section -->
+        <section id="profile" class="section">
+            <div class="container">
+                <div class="section-header">
+                    <h1><i class="fas fa-user"></i> Profile Settings</h1>
+                </div>
+                <div class="table-container">
+                    <div class="member-details">
+                        <h4>Personal Information</h4>
+                        <div class="detail-grid">
+                            <div class="detail-item">
+                                <label>Full Name</label>
+                                <span id="profileName"></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Nickname</label>
+                                <span id="profileNickname"></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Email</label>
+                                <span id="profileEmail"></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Phone</label>
+                                <span id="profilePhone"></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Role</label>
+                                <span id="profileRole"></span>
+                            </div>
+                            <div class="detail-item">
+                                <label>Member Since</label>
+                                <span id="profileJoined"></span>
+                            </div>
+                        </div>
+                        <div style="margin-top: 1rem; display: flex; gap: 1rem;">
+                            <button id="editNicknameBtn" class="btn-primary">
+                                <i class="fas fa-edit"></i> Edit Nickname
+                            </button>
+                            <button id="changePasswordBtn" class="btn-secondary">
+                                <i class="fas fa-key"></i> Change Password
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </div>
+
+    <!-- Manager Switch Modal -->
+    <div id="managerSwitchModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Switch Manager</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form class="modal-form">
+                <div class="input-group">
+                    <label>Current Manager Email</label>
+                    <input type="email" id="currentManagerEmail" readonly>
+                </div>
+                <div class="input-group">
+                    <label>Current Manager Password</label>
+                    <input type="password" id="currentManagerPassword" placeholder="Enter your password" required>
+                </div>
+                <div class="input-group">
+                    <label>New Manager</label>
+                    <input type="text" id="newManagerName" readonly>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary close">Cancel</button>
+                    <button type="button" id="confirmSwitchBtn" class="btn-primary">Send Request</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Other Modals (keeping existing ones) -->
+    <!-- Add Meal Modal -->
+    <div id="addMealModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Meal Entry</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form class="modal-form">
+                <div class="input-group">
+                    <label>Date</label>
+                    <input type="date" id="entryDate" required>
+                </div>
+                <div class="input-group">
+                    <label>Bazar Person</label>
+                    <select id="bazarPerson" required>
+                        <option value="">Select Member</option>
+                    </select>
+                </div>
+                <div class="input-group">
+                    <label>Meal Counts for Each Member</label>
+                    <div id="mealMembers" class="form-grid">
+                        <!-- Dynamic meal inputs -->
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary close">Cancel</button>
+                    <button type="button" id="addMealEntryBtn" class="btn-primary">Add Entry</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Expense Modal -->
+    <div id="addExpenseModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add Expense Entry</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form class="modal-form">
+                <div class="input-group">
+                    <label>Date</label>
+                    <input type="date" id="expenseDate" required>
+                </div>
+                <div class="input-group">
+                    <label>Description</label>
+                    <input type="text" id="expenseDescription" placeholder="e.g., Day 1 Bazar" required>
+                </div>
+                <div class="input-group">
+                    <label>Expense Amount for Each Member</label>
+                    <div id="expenseMembers" class="form-grid">
+                        <!-- Dynamic expense inputs -->
+                    </div>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary close">Cancel</button>
+                    <button type="button" id="addExpenseEntryBtn" class="btn-primary">Add Expense</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Add Member Modal -->
+    <div id="addMemberModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Add New Member</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form class="modal-form">
+                <div class="input-group">
+                    <label>Full Name</label>
+                    <input type="text" id="addFullName" required>
+                </div>
+                <div class="input-group">
+                    <label>Email</label>
+                    <input type="email" id="addEmail" required>
+                </div>
+                <div class="input-group">
+                    <label>Phone Number</label>
+                    <input type="tel" id="addPhone" required>
+                </div>
+                <div class="input-group">
+                    <label>Temporary Password</label>
+                    <input type="text" id="addTempPass" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary close">Cancel</button>
+                    <button type="button" id="addMemberEntryBtn" class="btn-primary">Add Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Member Detail Modal -->
+    <div id="memberDetailModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2 id="memberDetailTitle">Member Details</h2>
+                <span class="close">&times;</span>
+            </div>
+            <div class="modal-form">
+                <div id="memberDetailContent">
+                    <!-- Dynamic member details -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Nickname Modal -->
+    <div id="editNicknameModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Edit Nickname</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form class="modal-form">
+                <div class="input-group">
+                    <label>Nickname</label>
+                    <input type="text" id="editNickname" placeholder="Enter your nickname">
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary close">Cancel</button>
+                    <button type="button" id="updateNicknameBtn" class="btn-primary">Update Nickname</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Change Password Modal -->
+    <div id="changePasswordModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>Change Password</h2>
+                <span class="close">&times;</span>
+            </div>
+            <form class="modal-form">
+                <div class="input-group">
+                    <label>Current Password</label>
+                    <input type="password" id="currentPass" required>
+                </div>
+                <div class="input-group">
+                    <label>New Password</label>
+                    <input type="password" id="newPass" required>
+                </div>
+                <div class="input-group">
+                    <label>Confirm New Password</label>
+                    <input type="password" id="confirmPass" required>
+                </div>
+                <div class="modal-actions">
+                    <button type="button" class="btn-secondary close">Cancel</button>
+                    <button type="button" id="updatePassBtn" class="btn-primary">Change Password</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Toast Container -->
+    <div id="toastContainer"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="api.js"></script>
+    <script src="script.js"></script>
+</body>
+
+</html>
